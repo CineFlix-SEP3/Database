@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sep3.cineflix.grpc";
+option java_outer_classname = "UserServiceProto";
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (UserResponse);
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (UserResponse);
+  rpc GetUserByUsername (GetUserByUsernameRequest) returns (UserResponse);
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string hashedPassword = 3;
+  string userRole = 4;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message GetUserByUsernameRequest {
+  string username = 1;
+}
+
+message UserResponse {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string hashedPassword = 4;
+  string userRole = 5;
+}
