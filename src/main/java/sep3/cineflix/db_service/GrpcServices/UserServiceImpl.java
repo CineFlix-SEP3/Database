@@ -9,7 +9,6 @@ import sep3.cineflix.grpc.*;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @Service
 public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
@@ -21,6 +20,14 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void createUser(CreateUserRequest request, StreamObserver<UserResponse> responseObserver) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            responseObserver.onError(new RuntimeException("Email already in use"));
+            return;
+        }
+        if (userRepository.existsByUsername(request.getUsername())) {
+            responseObserver.onError(new RuntimeException("Username already in use"));
+            return;
+        }
         User user = new User(
                 null,
                 request.getUsername(),
@@ -74,6 +81,16 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         Optional<User> userOpt = userRepository.findById(request.getId());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+
+            if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+                responseObserver.onError(new RuntimeException("Email already in use"));
+                return;
+            }
+            if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
+                responseObserver.onError(new RuntimeException("Username already in use"));
+                return;
+            }
+
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
             user.setHashedPassword(request.getHashedPassword());
