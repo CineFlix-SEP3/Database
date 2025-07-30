@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sep3.cineflix.grpc";
+option java_outer_classname = "MovieServiceProto";
+
+service MovieService {
+  rpc CreateMovie (CreateMovieRequest) returns (MovieResponse);
+  rpc GetMovieById (GetMovieByIdRequest) returns (MovieResponse);
+  rpc GetMovieByTitle (GetMovieByTitleRequest) returns (MovieResponse);
+  rpc GetAllMovies (GetAllMoviesRequest) returns (GetAllMoviesResponse);
+  rpc UpdateMovie (UpdateMovieRequest) returns (MovieResponse);
+  rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse);
+
+  rpc GetMoviesByGenre (GetMoviesByGenreRequest) returns (GetAllMoviesResponse);
+  rpc GetMoviesByDirector (GetMoviesByDirectorRequest) returns (GetAllMoviesResponse);
+  rpc GetMoviesByActor (GetMoviesByActorRequest) returns (GetAllMoviesResponse);
+}
+
+message CreateMovieRequest {
+  string title = 1;
+  repeated string genres = 2;
+  repeated string directors = 3;
+  repeated string actors = 4;
+  int32 runTime = 5;
+  string releaseDate = 6;
+  double rating = 7;
+  string description = 8;
+  string posterUrl = 9;
+}
+
+message GetMovieByIdRequest {
+  int32 id = 1;
+}
+
+message GetMovieByTitleRequest {
+  string title = 1;
+}
+
+message GetAllMoviesRequest {}
+
+message UpdateMovieRequest {
+  int32 id = 1;
+  string title = 2;
+  repeated string genres = 3;
+  repeated string directors = 4;
+  repeated string actors = 5;
+  int32 runTime = 6;
+  string releaseDate = 7;
+  double rating = 8;
+  string description = 9;
+  string posterUrl = 10;
+}
+
+message DeleteMovieRequest {
+  int32 id = 1;
+}
+
+message DeleteMovieResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetAllMoviesResponse {
+  repeated MovieResponse movies = 1;
+}
+
+message MovieResponse {
+  int32 id = 1;
+  string title = 2;
+  repeated string genres = 3;
+  repeated string directors = 4;
+  repeated string actors = 5;
+  int32 runTime = 6;
+  string releaseDate = 7;
+  double rating = 8;
+  string description = 9;
+  string posterUrl = 10;
+}
+
+message GetMoviesByGenreRequest {
+  string genre = 1;
+}
+
+message GetMoviesByDirectorRequest {
+  string director = 1;
+}
+
+message GetMoviesByActorRequest {
+  string actor = 1;
+}
