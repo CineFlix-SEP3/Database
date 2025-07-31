@@ -1,39 +1,31 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Gradle build output
+/build/
+.gradle/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IDEs
+.idea/
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.iws
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# macOS
+.DS_Store
 
-### VS Code ###
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Java compiled classes
+*.class
+
+# Logs
+*.log
+
+# VS Code
 .vscode/
 
-.ds_store
+# Generated JAR/WAR files
+*.jar
+*.war
+*.ear
