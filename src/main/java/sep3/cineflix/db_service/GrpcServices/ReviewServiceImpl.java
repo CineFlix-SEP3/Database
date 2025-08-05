@@ -8,6 +8,7 @@ import sep3.cineflix.grpc.*;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
@@ -36,6 +37,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
         review.setText(request.getText());
         review.setRating(request.getRating());
         Review saved = reviewRepository.save(review);
+        updateMovieRating(saved.getMovie());
         responseObserver.onNext(toReviewResponse(saved));
         responseObserver.onCompleted();
     }
@@ -66,6 +68,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
             review.setText(request.getText());
             review.setRating(request.getRating());
             Review updated = reviewRepository.save(review);
+            updateMovieRating(updated.getMovie());
             responseObserver.onNext(toReviewResponse(updated));
             responseObserver.onCompleted();
         } else {
@@ -75,14 +78,26 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
 
     @Override
     public void deleteReview(DeleteReviewRequest request, StreamObserver<DeleteReviewResponse> responseObserver) {
-        if (reviewRepository.existsById(request.getId())) {
+        Optional<Review> reviewOpt = reviewRepository.findById(request.getId());
+        if (reviewOpt.isPresent()) {
+            Review review = reviewOpt.get();
+            Movie movie = review.getMovie();
             reviewRepository.deleteById(request.getId());
+            updateMovieRating(movie);
             DeleteReviewResponse response = DeleteReviewResponse.newBuilder().setSuccess(true).setMessage("Review deleted").build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } else {
             responseObserver.onError(new RuntimeException("Review not found"));
         }
+    }
+
+    private void updateMovieRating(Movie movie) {
+        List<Review> reviews = reviewRepository.findByMovieId(movie.getId());
+        double avg = reviews.isEmpty() ? 0.0 :
+                reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
+        movie.setRating(avg);
+        movieRepository.save(movie);
     }
 
     private ReviewResponse toReviewResponse(Review review) {

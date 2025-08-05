@@ -24,7 +24,18 @@ message CreateMovieRequest {
   repeated string actors = 4;
   int32 runTime = 5;
   string releaseDate = 6;
-  double rating = 7;
+  string description = 7;
+  string posterUrl = 8;
+}
+
+message UpdateMovieRequest {
+  int32 id = 1;
+  string title = 2;
+  repeated string genres = 3;
+  repeated string directors = 4;
+  repeated string actors = 5;
+  int32 runTime = 6;
+  string releaseDate = 7;
   string description = 8;
   string posterUrl = 9;
 }
@@ -38,19 +49,6 @@ message GetMovieByTitleRequest {
 }
 
 message GetAllMoviesRequest {}
-
-message UpdateMovieRequest {
-  int32 id = 1;
-  string title = 2;
-  repeated string genres = 3;
-  repeated string directors = 4;
-  repeated string actors = 5;
-  int32 runTime = 6;
-  string releaseDate = 7;
-  double rating = 8;
-  string description = 9;
-  string posterUrl = 10;
-}
 
 message DeleteMovieRequest {
   int32 id = 1;

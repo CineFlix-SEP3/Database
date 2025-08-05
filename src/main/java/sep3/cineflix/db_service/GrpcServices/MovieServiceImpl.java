@@ -27,7 +27,17 @@ public class MovieServiceImpl extends MovieServiceGrpc.MovieServiceImplBase {
             responseObserver.onError(new RuntimeException("Title already exists"));
             return;
         }
-        Movie movie = Movie.builder().title(request.getTitle()).genres(new HashSet<>(request.getGenresList())).directors(new HashSet<>(request.getDirectorsList())).actors(new HashSet<>(request.getActorsList())).runTime(request.getRunTime()).releaseDate(LocalDate.parse(request.getReleaseDate())).rating(request.getRating()).description(request.getDescription()).posterUrl(request.getPosterUrl()).build();
+        Movie movie = Movie.builder()
+                .title(request.getTitle())
+                .genres(new HashSet<>(request.getGenresList()))
+                .directors(new HashSet<>(request.getDirectorsList()))
+                .actors(new HashSet<>(request.getActorsList()))
+                .runTime(request.getRunTime())
+                .releaseDate(LocalDate.parse(request.getReleaseDate()))
+                .rating(0.0) // Set default rating
+                .description(request.getDescription())
+                .posterUrl(request.getPosterUrl())
+                .build();
         Movie saved = movieRepository.save(movie);
         responseObserver.onNext(toMovieResponse(saved));
         responseObserver.onCompleted();
@@ -74,7 +84,6 @@ public class MovieServiceImpl extends MovieServiceGrpc.MovieServiceImplBase {
             movie.setActors(new HashSet<>(request.getActorsList()));
             movie.setRunTime(request.getRunTime());
             movie.setReleaseDate(LocalDate.parse(request.getReleaseDate()));
-            movie.setRating(request.getRating());
             movie.setDescription(request.getDescription());
             movie.setPosterUrl(request.getPosterUrl());
             Movie updated = movieRepository.save(movie);
@@ -122,6 +131,17 @@ public class MovieServiceImpl extends MovieServiceGrpc.MovieServiceImplBase {
     }
 
     private MovieResponse toMovieResponse(Movie movie) {
-        return MovieResponse.newBuilder().setId(movie.getId()).setTitle(movie.getTitle()).addAllGenres(movie.getGenres()).addAllDirectors(movie.getDirectors()).addAllActors(movie.getActors()).setRunTime(movie.getRunTime()).setReleaseDate(movie.getReleaseDate().toString()).setRating(movie.getRating() != null ? movie.getRating() : 0.0).setDescription(movie.getDescription() != null ? movie.getDescription() : "").setPosterUrl(movie.getPosterUrl() != null ? movie.getPosterUrl() : "").build();
+        return MovieResponse.newBuilder()
+                .setId(movie.getId())
+                .setTitle(movie.getTitle())
+                .addAllGenres(movie.getGenres())
+                .addAllDirectors(movie.getDirectors())
+                .addAllActors(movie.getActors())
+                .setRunTime(movie.getRunTime())
+                .setReleaseDate(movie.getReleaseDate().toString())
+                .setRating(movie.getRating() != null ? movie.getRating() : 0.0)
+                .setDescription(movie.getDescription() != null ? movie.getDescription() : "")
+                .setPosterUrl(movie.getPosterUrl() != null ? movie.getPosterUrl() : "")
+                .build();
     }
 }
