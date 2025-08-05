@@ -2,6 +2,7 @@ package sep3.cineflix.db_service.GrpcServices;
 
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sep3.cineflix.db_service.Entities.*;
 import sep3.cineflix.db_service.Repositories.*;
 import sep3.cineflix.grpc.*;
@@ -24,6 +25,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Override
+    @Transactional
     public void createReview(CreateReviewRequest request, StreamObserver<ReviewResponse> responseObserver) {
         Optional<Movie> movieOpt = movieRepository.findById(request.getMovieId());
         Optional<User> userOpt = userRepository.findById(request.getUserId());
@@ -43,6 +45,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void getReviewsByMovie(GetReviewsByMovieRequest request, StreamObserver<GetAllReviewsResponse> responseObserver) {
         var reviews = reviewRepository.findByMovieId(request.getMovieId())
                 .stream().map(this::toReviewResponse).collect(Collectors.toList());
@@ -52,6 +55,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void getReviewsByUser(GetReviewsByUserRequest request, StreamObserver<GetAllReviewsResponse> responseObserver) {
         var reviews = reviewRepository.findByUserId(request.getUserId())
                 .stream().map(this::toReviewResponse).collect(Collectors.toList());
@@ -61,6 +65,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Override
+    @Transactional
     public void updateReview(UpdateReviewRequest request, StreamObserver<ReviewResponse> responseObserver) {
         Optional<Review> reviewOpt = reviewRepository.findById(request.getId());
         if (reviewOpt.isPresent()) {
@@ -77,6 +82,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Override
+    @Transactional
     public void deleteReview(DeleteReviewRequest request, StreamObserver<DeleteReviewResponse> responseObserver) {
         Optional<Review> reviewOpt = reviewRepository.findById(request.getId());
         if (reviewOpt.isPresent()) {
@@ -92,6 +98,27 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void getReviewById(GetReviewByIdRequest request, StreamObserver<GetReviewByIdResponse> responseObserver) {
+        Optional<Review> reviewOpt = reviewRepository.findById(request.getId());
+        if (reviewOpt.isPresent()) {
+            Review review = reviewOpt.get();
+            GetReviewByIdResponse response = GetReviewByIdResponse.newBuilder()
+                    .setId(review.getId())
+                    .setMovieId(review.getMovie().getId())
+                    .setUserId(review.getUser().getId())
+                    .setText(review.getText())
+                    .setRating(review.getRating())
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } else {
+            responseObserver.onError(new RuntimeException("Review not found"));
+        }
+    }
+
+    @Transactional(readOnly = true)
     private void updateMovieRating(Movie movie) {
         List<Review> reviews = reviewRepository.findByMovieId(movie.getId());
         double avg = reviews.isEmpty() ? 0.0 :

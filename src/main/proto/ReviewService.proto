@@ -10,6 +10,7 @@ service ReviewService {
   rpc GetReviewsByUser (GetReviewsByUserRequest) returns (GetAllReviewsResponse);
   rpc UpdateReview (UpdateReviewRequest) returns (ReviewResponse);
   rpc DeleteReview (DeleteReviewRequest) returns (DeleteReviewResponse);
+  rpc GetReviewById (GetReviewByIdRequest) returns (GetReviewByIdResponse); // <-- Added
 }
 
 message CreateReviewRequest {
@@ -47,6 +48,18 @@ message GetAllReviewsResponse {
 }
 
 message ReviewResponse {
+  int32 id = 1;
+  int32 movieId = 2;
+  int32 userId = 3;
+  string text = 4;
+  double rating = 5;
+}
+
+message GetReviewByIdRequest {
+  int32 id = 1;
+}
+
+message GetReviewByIdResponse {
   int32 id = 1;
   int32 movieId = 2;
   int32 userId = 3;
