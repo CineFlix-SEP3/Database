@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sep3.cineflix.grpc";
+option java_outer_classname = "ReviewServiceProto";
+
+service ReviewService {
+  rpc CreateReview (CreateReviewRequest) returns (ReviewResponse);
+  rpc GetReviewsByMovie (GetReviewsByMovieRequest) returns (GetAllReviewsResponse);
+  rpc GetReviewsByUser (GetReviewsByUserRequest) returns (GetAllReviewsResponse);
+  rpc UpdateReview (UpdateReviewRequest) returns (ReviewResponse);
+  rpc DeleteReview (DeleteReviewRequest) returns (DeleteReviewResponse);
+}
+
+message CreateReviewRequest {
+  int32 movieId = 1;
+  int32 userId = 2;
+  string text = 3;
+  double rating = 4;
+}
+
+message GetReviewsByMovieRequest {
+  int32 movieId = 1;
+}
+
+message GetReviewsByUserRequest {
+  int32 userId = 1;
+}
+
+message UpdateReviewRequest {
+  int32 id = 1;
+  string text = 2;
+  double rating = 3;
+}
+
+message DeleteReviewRequest {
+  int32 id = 1;
+}
+
+message DeleteReviewResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetAllReviewsResponse {
+  repeated ReviewResponse reviews = 1;
+}
+
+message ReviewResponse {
+  int32 id = 1;
+  int32 movieId = 2;
+  int32 userId = 3;
+  string text = 4;
+  double rating = 5;
+}

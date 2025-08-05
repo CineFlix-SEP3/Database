@@ -11,7 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "movies")
@@ -31,17 +32,17 @@ public class Movie {
     @ElementCollection
     @CollectionTable(name = "movie_genres", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre")
-    private List<String> genres;
+    private Set<String> genres = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "movie_directors", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "director")
-    private List<String> directors;
+    private Set<String> directors = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "movie_actors", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "actor")
-    private List<String> actors;
+    private Set<String> actors = new HashSet<>();
 
     @Column(name = "run_time", nullable = false)
     @NotNull(message = "Run time must be specified")
