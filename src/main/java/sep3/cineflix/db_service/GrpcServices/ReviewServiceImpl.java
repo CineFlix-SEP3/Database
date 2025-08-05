@@ -119,7 +119,7 @@ public class ReviewServiceImpl extends ReviewServiceGrpc.ReviewServiceImplBase {
     }
 
     @Transactional(readOnly = true)
-    private void updateMovieRating(Movie movie) {
+    public void updateMovieRating(Movie movie) {
         List<Review> reviews = reviewRepository.findByMovieId(movie.getId());
         double avg = reviews.isEmpty() ? 0.0 :
                 reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);

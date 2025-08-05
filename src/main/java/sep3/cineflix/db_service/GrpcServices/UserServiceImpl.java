@@ -1,9 +1,12 @@
 package sep3.cineflix.db_service.GrpcServices;
 
 import io.grpc.stub.StreamObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sep3.cineflix.db_service.Entities.User;
 import sep3.cineflix.db_service.Entities.UserRole;
+import sep3.cineflix.db_service.Repositories.ReviewRepository;
 import sep3.cineflix.db_service.Repositories.UserRepository;
 import sep3.cineflix.grpc.*;
 
@@ -13,9 +16,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.reviewRepository = null;
     }
 
     @Override
@@ -103,9 +109,12 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         }
     }
 
+
     @Override
+    @Transactional
     public void deleteUser(DeleteUserRequest request, StreamObserver<DeleteUserResponse> responseObserver) {
         if (userRepository.existsById(request.getId())) {
+            reviewRepository.deleteByUserId(request.getId()); // Delete reviews first
             userRepository.deleteById(request.getId());
             DeleteUserResponse response = DeleteUserResponse.newBuilder()
                     .setSuccess(true)
@@ -129,6 +138,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
+
 
     private UserResponse toUserResponse(User user) {
         return UserResponse.newBuilder()
