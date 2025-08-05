@@ -19,9 +19,9 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     private final ReviewRepository reviewRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ReviewRepository reviewRepository) {
         this.userRepository = userRepository;
-        this.reviewRepository = null;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
