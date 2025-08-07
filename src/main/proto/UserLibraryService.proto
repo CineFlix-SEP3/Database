@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sep3.cineflix.grpc.userlibrary";
+
+package userlibrary;
+
+service UserLibraryService {
+  rpc addFavorite(AddFavoriteRequest) returns (AddFavoriteResponse);
+  rpc getFavorites(GetFavoritesRequest) returns (GetFavoritesResponse);
+  rpc removeFavorite(RemoveFavoriteRequest) returns (RemoveFavoriteResponse);
+
+  rpc addWatchList(AddWatchListRequest) returns (AddWatchListResponse);
+  rpc getWatchList(GetWatchListRequest) returns (GetWatchListResponse);
+  rpc removeWatchList(RemoveWatchListRequest) returns (RemoveWatchListResponse);
+}
+
+message AddFavoriteRequest {
+  int32 user_id = 1;
+  int32 movie_id = 2;
+}
+
+message AddFavoriteResponse {
+  bool success = 1;
+}
+
+message GetFavoritesRequest {
+  int32 user_id = 1;
+}
+
+message GetFavoritesResponse {
+  repeated int32 movie_ids = 1;
+}
+
+message RemoveFavoriteRequest {
+  int32 user_id = 1;
+  int32 movie_id = 2;
+}
+
+message RemoveFavoriteResponse {
+  bool success = 1;
+}
+
+message AddWatchListRequest {
+  int32 user_id = 1;
+  int32 movie_id = 2;
+}
+
+message AddWatchListResponse {
+  bool success = 1;
+}
+
+message GetWatchListRequest {
+  int32 user_id = 1;
+}
+
+message GetWatchListResponse {
+  repeated int32 movie_ids = 1;
+}
+
+message RemoveWatchListRequest {
+  int32 user_id = 1;
+  int32 movie_id = 2;
+}
+
+message RemoveWatchListResponse {
+  bool success = 1;
+}
